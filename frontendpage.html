@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Daily Water Intake Calculator</title>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Segoe UI',sans-serif;
+}
+
+body{
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:linear-gradient(135deg,#00c6ff,#0072ff);
+    padding:20px;
+}
+
+.container{
+    width:100%;
+    max-width:450px;
+    background:rgba(255,255,255,0.15);
+    backdrop-filter:blur(15px);
+    border-radius:20px;
+    padding:30px;
+    box-shadow:0 8px 32px rgba(0,0,0,0.2);
+    color:white;
+}
+
+h2{
+    text-align:center;
+    margin-bottom:25px;
+    font-size:28px;
+}
+
+.input-group{
+    margin-bottom:15px;
+}
+
+label{
+    display:block;
+    margin-bottom:6px;
+    font-weight:600;
+}
+
+input,
+select{
+    width:100%;
+    padding:12px;
+    border:none;
+    outline:none;
+    border-radius:10px;
+    font-size:16px;
+}
+
+button{
+    width:100%;
+    padding:14px;
+    border:none;
+    border-radius:10px;
+    background:white;
+    color:#0072ff;
+    font-size:18px;
+    font-weight:bold;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+button:hover{
+    transform:translateY(-2px);
+    box-shadow:0 5px 15px rgba(0,0,0,0.2);
+}
+
+#result{
+    margin-top:25px;
+    text-align:center;
+    display:none;
+}
+
+.result-card{
+    background:rgba(255,255,255,0.2);
+    padding:20px;
+    border-radius:15px;
+}
+
+.result-value{
+    font-size:34px;
+    font-weight:bold;
+    margin:10px 0;
+}
+
+.water-icon{
+    font-size:50px;
+}
+
+.error{
+    color:#ffdddd;
+    background:rgba(255,0,0,0.2);
+    padding:10px;
+    border-radius:10px;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h2>💧 Water Intake Calculator</h2>
+
+    <div class="input-group">
+        <label>Weight (kg)</label>
+        <input type="number" id="weight" placeholder="Enter your weight">
+    </div>
+
+    <div class="input-group">
+        <label>Gender</label>
+        <select id="gender">
+            <option value="">Select Gender</option>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+        </select>
+    </div>
+
+    <div class="input-group">
+        <label>Activity Level</label>
+        <select id="activity_level">
+            <option value="">Select Activity Level</option>
+            <option value="Low">Low</option>
+            <option value="Medium">Medium</option>
+            <option value="High">High</option>
+        </select>
+    </div>
+
+    <div class="input-group">
+        <label>Weather</label>
+        <select id="weather">
+            <option value="">Select Weather</option>
+            <option value="Cold">Cold</option>
+            <option value="Moderate">Moderate</option>
+            <option value="Hot">Hot</option>
+        </select>
+    </div>
+
+    <button onclick="calculateWaterIntake()">
+        Calculate 💧
+    </button>
+
+    <div id="result"></div>
+
+</div>
+
+<script>
+
+async function calculateWaterIntake(){
+
+    const payload = {
+        gender: document.getElementById("gender").value,
+        weight: document.getElementById("weight").value,
+        activity_level: document.getElementById("activity_level").value,
+        weather: document.getElementById("weather").value
+    };
+
+    try{
+
+        const response = await fetch(
+            "https://water-voxd.onrender.com/water/water-intake/",
+            {
+                method:"POST",
+                headers:{
+                    "Content-Type":"application/json"
+                },
+                body:JSON.stringify(payload)
+            }
+        );
+
+        const data = await response.json();
+
+        document.getElementById("result").style.display = "block";
+
+        document.getElementById("result").innerHTML = `
+            <div class="result-card">
+                <div class="water-icon">💧</div>
+                <h3>Recommended Intake</h3>
+                <div class="result-value">
+                    ${data.recommended_water_intake}
+                </div>
+                <p>Liters Per Day</p>
+            </div>
+        `;
+
+    }
+    catch(error){
+
+        document.getElementById("result").style.display = "block";
+
+        document.getElementById("result").innerHTML = `
+            <div class="error">
+                Failed to connect to server
+            </div>
+        `;
+
+        console.error(error);
+    }
+}
+
+</script>
+
+</body>
+</html>
