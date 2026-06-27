@@ -2,284 +2,84 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Daily Water Intake Calculator</title>
-
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Water Intake Calculator</title>
 <style>
-
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-    font-family:'Segoe UI',sans-serif;
-}
-
-body{
-    min-height:100vh;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    background:linear-gradient(135deg,#00c6ff,#0072ff);
-    padding:20px;
-}
-
-.container{
-    width:100%;
-    max-width:450px;
-    background:rgba(255,255,255,0.15);
-    backdrop-filter:blur(15px);
-    border-radius:20px;
-    padding:30px;
-    box-shadow:0 8px 32px rgba(0,0,0,0.2);
-    color:white;
-}
-
-h2{
-    text-align:center;
-    margin-bottom:25px;
-    font-size:28px;
-}
-
-.input-group{
-    margin-bottom:15px;
-}
-
-label{
-    display:block;
-    margin-bottom:6px;
-    font-weight:600;
-}
-
-input,
-select{
-    width:100%;
-    padding:12px;
-    border:none;
-    outline:none;
-    border-radius:10px;
-    font-size:16px;
-}
-
-button{
-    width:100%;
-    padding:14px;
-    border:none;
-    border-radius:10px;
-    background:white;
-    color:#0072ff;
-    font-size:18px;
-    font-weight:bold;
-    cursor:pointer;
-    transition:0.3s;
-}
-
-button:hover{
-    transform:translateY(-2px);
-    box-shadow:0 5px 15px rgba(0,0,0,0.2);
-}
-
-#result{
-    margin-top:25px;
-    text-align:center;
-    display:none;
-}
-
-.result-card{
-    background:rgba(255,255,255,0.2);
-    padding:20px;
-    border-radius:15px;
-    text-align:left;
-}
-
-.result-card h3{
-    text-align:center;
-}
-
-.result-value{
-    font-size:34px;
-    font-weight:bold;
-    margin:10px 0;
-    text-align:center;
-}
-
-.glasses{
-    text-align:center;
-    font-size:15px;
-    opacity:0.9;
-    margin-bottom:15px;
-}
-
-.water-icon{
-    font-size:50px;
-    display:block;
-    text-align:center;
-}
-
-.detail-block{
-    background:rgba(255,255,255,0.12);
-    border-radius:10px;
-    padding:12px 14px;
-    margin-top:12px;
-    font-size:13.5px;
-    line-height:1.5;
-}
-
-.detail-block strong{
-    display:block;
-    margin-bottom:4px;
-    font-size:13px;
-    text-transform:uppercase;
-    letter-spacing:0.04em;
-    opacity:0.85;
-}
-
-.note{
-    margin-top:10px;
-    font-size:13px;
-    opacity:0.85;
-}
-
-.error{
-    color:#ffdddd;
-    background:rgba(255,0,0,0.2);
-    padding:10px;
-    border-radius:10px;
-}
-
+*{box-sizing:border-box;font-family:Segoe UI,sans-serif}
+body{margin:0;display:flex;justify-content:center;align-items:center;min-height:100vh;background:linear-gradient(135deg,#0ea5e9,#2563eb)}
+.card{background:#ffffffee;width:min(92%,520px);padding:24px;border-radius:18px;box-shadow:0 12px 30px rgba(0,0,0,.2)}
+h2{text-align:center;color:#2563eb}
+label{display:block;margin:10px 0 5px;font-weight:600}
+input,select,button{width:100%;padding:12px;border-radius:10px;border:1px solid #ccc;font-size:16px}
+button{margin-top:16px;background:#2563eb;color:#fff;border:none;cursor:pointer}
+button:hover{background:#1d4ed8}
+#loader{display:none;text-align:center;margin:15px}
+.spinner{width:42px;height:42px;border:5px solid #ddd;border-top:5px solid #2563eb;border-radius:50%;animation:spin 1s linear infinite;margin:auto}
+@keyframes spin{to{transform:rotate(360deg)}}
+#result{display:none;margin-top:20px}
+.result{background:#eff6ff;padding:18px;border-radius:12px}
+.big{font-size:42px;color:#2563eb;text-align:center;font-weight:bold}
+.progress{height:14px;background:#dbeafe;border-radius:20px;overflow:hidden;margin:10px 0}
+.bar{height:100%;width:0;background:#2563eb;transition:1s}
+.tip{background:#f8fafc;padding:10px;border-left:4px solid #2563eb;margin-top:10px}
+.error{background:#fee2e2;color:#991b1b;padding:10px;border-radius:8px}
 </style>
 </head>
-
 <body>
-
-<div class="container">
-
-    <h2>💧 Water Intake Calculator</h2>
-
-    <div class="input-group">
-        <label>Weight (kg)</label>
-        <input type="number" id="weight" placeholder="Enter your weight">
-    </div>
-
-    <div class="input-group">
-        <label>Age</label>
-        <input type="number" id="age" placeholder="Enter your age">
-    </div>
-
-    <div class="input-group">
-        <label>Gender</label>
-        <select id="gender">
-            <option value="">Select Gender</option>
-            <option value="Male">Male</option>
-            <option value="Female">Female</option>
-        </select>
-    </div>
-
-    <div class="input-group">
-        <label>Activity Level</label>
-        <select id="activity_level">
-            <option value="">Select Activity Level</option>
-            <option value="Low">Low</option>
-            <option value="Moderate">Moderate</option>
-            <option value="High">High</option>
-        </select>
-    </div>
-
-    <div class="input-group">
-        <label>Weather</label>
-        <select id="weather">
-            <option value="">Select Weather</option>
-            <option value="Cold">Cold</option>
-            <option value="Normal">Normal</option>
-            <option value="Hot">Hot</option>
-        </select>
-    </div>
-
-    <button onclick="calculateWaterIntake()">
-        Calculate 💧
-    </button>
-
-    <div id="result"></div>
-
+<div class="card">
+<h2>💧 Daily Water Intake Calculator</h2>
+<label>Weight (kg)</label><input id="weight" type="number">
+<label>Age</label><input id="age" type="number">
+<label>Gender</label>
+<select id="gender"><option value="">Select</option><option>Male</option><option>Female</option></select>
+<label>Activity</label>
+<select id="activity_level"><option value="">Select</option><option>Low</option><option>Moderate</option><option>High</option></select>
+<label>Weather</label>
+<select id="weather"><option value="">Select</option><option>Cold</option><option>Normal</option><option>Hot</option></select>
+<button onclick="calculate()">Calculate</button>
+<div id="loader"><div class="spinner"></div><p>Calculating...</p></div>
+<div id="result"></div>
 </div>
-
 <script>
-
-async function calculateWaterIntake(){
-
-    const weight = document.getElementById("weight").value;
-    const age = document.getElementById("age").value;
-    const gender = document.getElementById("gender").value;
-    const activity_level = document.getElementById("activity_level").value;
-    const weather = document.getElementById("weather").value;
-
-    const resultBox = document.getElementById("result");
-
-    if(!weight || !age || !gender || !activity_level || !weather){
-        resultBox.style.display = "block";
-        resultBox.innerHTML = `
-            <div class="error">
-                Please fill in all fields before calculating.
-            </div>
-        `;
-        return;
-    }
-
-    const payload = { gender, weight, age, activity_level, weather };
-
-    try{
-
-        const response = await fetch(
-            "https://water-voxd.onrender.com/water/water-intake/",
-            {
-                method:"POST",
-                headers:{
-                    "Content-Type":"application/json"
-                },
-                body:JSON.stringify(payload)
-            }
-        );
-
-        const data = await response.json();
-
-        resultBox.style.display = "block";
-
-        if(!response.ok){
-            resultBox.innerHTML = `
-                <div class="error">
-                    ${data.error || "Something went wrong. Please check your inputs."}
-                </div>
-            `;
-            return;
-        }
-
-        const comparisonNote = data.comparison && data.comparison.note
-            ? `<div class="detail-block"><strong>How this compares</strong>${data.comparison.note}</div>`
-            : "";
-
-        resultBox.innerHTML = `
-            <div class="result-card">
-                <span class="water-icon">💧</span>
-                <h3>Recommended Intake</h3>
-                <div class="result-value">${data.recommended_water_intake} L</div>
-            </div>
-        `;
-
-    }
-    catch(error){
-
-        resultBox.style.display = "block";
-
-        resultBox.innerHTML = `
-            <div class="error">
-                Failed to connect to server
-            </div>
-        `;
-
-        console.error(error);
-    }
+const tips=[
+"Drink a glass of water after waking up.",
+"Carry a reusable water bottle.",
+"Drink more water after exercise.",
+"Increase intake during hot weather.",
+"Sip water throughout the day."
+];
+async function calculate(){
+const w=weight.value,a=age.value,g=gender.value,ac=activity_level.value,we=weather.value;
+const res=document.getElementById('result'),loader=document.getElementById('loader');
+if(!w||!a||!g||!ac||!we){res.style.display='block';res.innerHTML='<div class="error">Please fill all fields.</div>';return;}
+loader.style.display='block';res.style.display='none';
+try{
+const r=await fetch("https://water-voxd.onrender.com/water/water-intake/",{
+method:"POST",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify({weight:w,age:a,gender:g,activity_level:ac,weather:we})
+});
+const d=await r.json();
+loader.style.display='none';
+res.style.display='block';
+if(!r.ok){res.innerHTML='<div class="error">'+(d.error||'Server error')+'</div>';return;}
+const liters=parseFloat(d.recommended_water_intake);
+const glasses=Math.round((liters*1000)/250);
+const pct=Math.min(100,Math.round((liters/5)*100));
+document.querySelector;
+res.innerHTML=`<div class="result">
+<div class="big">${liters} L</div>
+<p style="text-align:center">≈ ${glasses} glasses/day</p>
+<div class="progress"><div class="bar" style="width:${pct}%"></div></div>
+<p><b>Status:</b> ${liters<2?'Low':liters<3?'Good':'Excellent'}</p>
+<div class="tip"><b>Health Tip:</b> ${tips[Math.floor(Math.random()*tips.length)]}</div>
+</div>`;
+}catch(e){
+loader.style.display='none';
+res.style.display='block';
+res.innerHTML='<div class="error">Failed to connect to server.</div>';
 }
-
+}
 </script>
-
 </body>
 </html>
